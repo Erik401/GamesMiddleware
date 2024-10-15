@@ -49,5 +49,16 @@ public class CharMovementScript : MonoBehaviour
         {
             charAnimator.SetBool("isRunningLeft", false);
         }
+
+        if (Input.GetKey(KeyCode.D))
+        {
+            charAnimator.SetBool("isRunningRight", true);
+            charPosition.position += transform.right * 5f * Time.deltaTime;
+        }
+
+        if (Input.GetKeyUp(KeyCode.D))
+        {
+            charAnimator.SetBool("isRunningRight", false);
+        }
     }
 }
