@@ -6,16 +6,26 @@ public class CharMovementScript : MonoBehaviour
 {
     Animator charAnimator;
     Transform charPosition;
+    float playerHor, playerVert;
     // Start is called before the first frame update
     void Start()
     {
         charAnimator = GetComponent<Animator>();
         charPosition = GetComponent<Transform>();
+
+
     }
 
     // Update is called once per frame
     void Update()
     {
+
+        playerHor = Input.GetAxis("Horizontal");
+        playerVert = Input.GetAxis("Vertical");
+        Vector3 movement = new Vector3 (playerHor, 0, playerVert) * 2f *Time.deltaTime;
+
+        movement = charPosition.TransformDirection(movement);
+        /*
         if (Input.GetKey(KeyCode.W)) {
             charAnimator.SetBool("isRunningForward", true);
             charPosition.position += transform.forward * 5f * Time.deltaTime;
@@ -60,5 +70,14 @@ public class CharMovementScript : MonoBehaviour
         {
             charAnimator.SetBool("isRunningRight", false);
         }
+        */
+
+
+        charAnimator.SetFloat("vel z", Input.GetAxis("Horizontal"), 0.08f,Time.deltaTime );
+        charAnimator.SetFloat("vel x", Input.GetAxis("Vertical"), 0.08f, Time.deltaTime);
+
+
+        charPosition.position += movement;
+
     }
 }
