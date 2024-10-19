@@ -6,7 +6,7 @@ public class CharMovementScript : MonoBehaviour
 {
     Animator charAnimator;
     Transform charPosition;
-    float playerHor, playerVert;
+    float playerHor, playerVert, lookX;
     // Start is called before the first frame update
     void Start()
     {
@@ -22,9 +22,12 @@ public class CharMovementScript : MonoBehaviour
 
         playerHor = Input.GetAxis("Horizontal");
         playerVert = Input.GetAxis("Vertical");
+        lookX = Input.GetAxis("Mouse X");
         Vector3 movement = new Vector3 (playerHor, 0, playerVert) * 2f *Time.deltaTime;
 
         movement = charPosition.TransformDirection(movement);
+
+
         /*
         if (Input.GetKey(KeyCode.W)) {
             charAnimator.SetBool("isRunningForward", true);
@@ -73,11 +76,12 @@ public class CharMovementScript : MonoBehaviour
         */
 
 
-        charAnimator.SetFloat("vel z", Input.GetAxis("Horizontal"), 0.08f,Time.deltaTime );
-        charAnimator.SetFloat("vel x", Input.GetAxis("Vertical"), 0.08f, Time.deltaTime);
+        charAnimator.SetFloat("vel z", Input.GetAxis("Horizontal"), 0.1f,Time.deltaTime );
+        charAnimator.SetFloat("vel x", Input.GetAxis("Vertical"), 0.1f, Time.deltaTime);
 
 
         charPosition.position += movement;
+        charPosition.Rotate(new Vector3(0f, lookX, 0f));
 
     }
 }
