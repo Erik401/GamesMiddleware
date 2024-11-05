@@ -1,17 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CharMovementScript : MonoBehaviour
 {
     Animator charAnimator;
     Transform charPosition;
-    float playerHor, playerVert;
+    float playerHor, playerVert, lookX, runSpeed;
+    Vector3 movement;
     // Start is called before the first frame update
     void Start()
     {
         charAnimator = GetComponent<Animator>();
         charPosition = GetComponent<Transform>();
+        Cursor.lockState = CursorLockMode.Locked;
+        runSpeed = 1f;
 
 
     }
@@ -19,12 +23,33 @@ public class CharMovementScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKey(KeyCode.Escape)) { 
+        Cursor.lockState = CursorLockMode.None;
+        }
+        if (Input.GetMouseButtonDown(0)) {
+            charAnimator.SetBool("isAttack", true);
+        }
+        if (Input.GetMouseButtonUp(0))
+        {
+            charAnimator.SetBool("isAttack", false);
+        }
 
-        playerHor = Input.GetAxis("Horizontal");
-        playerVert = Input.GetAxis("Vertical");
-        Vector3 movement = new Vector3 (playerHor, 0, playerVert) * 2f *Time.deltaTime;
+        playerHor = Input.GetAxisRaw("Horizontal");
+        playerVert = Input.GetAxisRaw("Vertical");
+        lookX = Input.GetAxis("Mouse X");
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            movement = new Vector3(playerHor, 0, playerVert) * (runSpeed * 2f) * Time.deltaTime;
+        }
+        else {
+            movement = new Vector3(playerHor, 0, playerVert) * runSpeed * Time.deltaTime;
+            playerHor = playerHor / 2;
+            playerVert = playerVert / 2;
+        }
 
         movement = charPosition.TransformDirection(movement);
+
+
         /*
         if (Input.GetKey(KeyCode.W)) {
             charAnimator.SetBool("isRunningForward", true);
@@ -73,11 +98,15 @@ public class CharMovementScript : MonoBehaviour
         */
 
 
-        charAnimator.SetFloat("vel z", Input.GetAxis("Horizontal"), 0.08f,Time.deltaTime );
-        charAnimator.SetFloat("vel x", Input.GetAxis("Vertical"), 0.08f, Time.deltaTime);
+
+
+
+        charAnimator.SetFloat("vel z", playerHor, 0.1f, Time.deltaTime);
+        charAnimator.SetFloat("vel x", playerVert, 0.1f, Time.deltaTime);
 
 
         charPosition.position += movement;
+        charPosition.Rotate(new Vector3(0f, lookX, 0f));
 
     }
 }
