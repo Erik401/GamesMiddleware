@@ -6,9 +6,11 @@ using UnityEngine;
 public class CharMovementScript : MonoBehaviour
 {
     Animator charAnimator;
-    Transform charPosition;
+    Transform charPosition, headTransform;
     float playerHor, playerVert, lookX, runSpeed;
     Vector3 movement;
+    private Vector3 target = Vector3.zero;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -16,7 +18,7 @@ public class CharMovementScript : MonoBehaviour
         charPosition = GetComponent<Transform>();
         Cursor.lockState = CursorLockMode.Locked;
         runSpeed = 1f;
-
+        headTransform = charAnimator.GetBoneTransform(HumanBodyBones.Head);
 
     }
 
@@ -108,5 +110,13 @@ public class CharMovementScript : MonoBehaviour
         charPosition.position += movement;
         charPosition.Rotate(new Vector3(0f, lookX, 0f));
 
+    }
+
+    private void LateUpdate()
+    {
+        Vector3 newUp = (target - headTransform.position).normalized;
+        Vector3 newRight = (Vector3.down - (Vector3.Dot(Vector3.down, newUp) * newUp)).normalized;
+        Vector3 newForward = - Vector3.Cross(newUp, newRight);
+        headTransform.rotation = Quaternion.LookRotation(newForward, newUp);
     }
 }
