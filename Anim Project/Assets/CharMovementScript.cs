@@ -8,14 +8,16 @@ public class CharMovementScript : MonoBehaviour
     Animator charAnimator;
     Transform charPosition, headTransform;
     float playerHor, playerVert, lookX, runSpeed;
+    Transform theCube;
     Vector3 movement;
-    private Vector3 target = Vector3.zero;
+    private Vector3 target;
 
     // Start is called before the first frame update
     void Start()
     {
         charAnimator = GetComponent<Animator>();
         charPosition = GetComponent<Transform>();
+        theCube = GameObject.Find("Cube").GetComponent<Transform>();
         Cursor.lockState = CursorLockMode.Locked;
         runSpeed = 1f;
         headTransform = charAnimator.GetBoneTransform(HumanBodyBones.Head);
@@ -106,7 +108,7 @@ public class CharMovementScript : MonoBehaviour
         charAnimator.SetFloat("vel z", playerHor, 0.1f, Time.deltaTime);
         charAnimator.SetFloat("vel x", playerVert, 0.1f, Time.deltaTime);
 
-
+        target = theCube.position;
         charPosition.position += movement;
         charPosition.Rotate(new Vector3(0f, lookX, 0f));
 
@@ -114,9 +116,10 @@ public class CharMovementScript : MonoBehaviour
 
     private void LateUpdate()
     {
-        Vector3 newUp = (target - headTransform.position).normalized;
-        Vector3 newRight = (Vector3.down - (Vector3.Dot(Vector3.down, newUp) * newUp)).normalized;
-        Vector3 newForward = - Vector3.Cross(newUp, newRight);
-        headTransform.rotation = Quaternion.LookRotation(newForward, newUp);
+        //Vector3 newUp = (target - headTransform.position).normalized;
+        //Vector3 newRight = (Vector3.down - (Vector3.Dot(Vector3.down, newUp) * newUp)).normalized;
+        //Vector3 newForward = - Vector3.Cross(newUp, newRight);
+        //headTransform.rotation = Quaternion.LookRotation(newForward, newUp);
+        headTransform.LookAt(target);
     }
 }
